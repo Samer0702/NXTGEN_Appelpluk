@@ -1,0 +1,23 @@
+##TODO!
+image_width: 1344
+image_height: 376
+camera_name: ZED2
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [262.7675, 0.000000, 334.58, 0.000000, 262.7675, 182.588, 0.000000, 0.000000, 1.000000]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.0377658, 0.00644315, 0.00010487, 9.6969e-05, -0.00388185]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [262.7675, 0.000000, 334.58, 0.000, 0.000000, 262.7675, 182.588, 0.000, 0.000000, 0.000000, 1.000000, 0.000]
+
+

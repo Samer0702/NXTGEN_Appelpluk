@@ -1,0 +1,37 @@
+// For format details, see https://aka.ms/devcontainer.json. 
+{
+	"name": "ROS2 Humble",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"mounts": [
+		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+		// "source=/dev/video0,target=/dev/video0,type=bind,consistency=cached",
+		// "source=/dev/video1,target=/dev/video1,type=bind,consistency=cached",
+		// "source=/dev/video2,target=/dev/video2,type=bind,consistency=cached",
+		// "source=/dev/video3,target=/dev/video3,type=bind,consistency=cached"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	},
+	"runArgs": ["--privileged","--network=host"]
+	
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},log
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "uname -a",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}

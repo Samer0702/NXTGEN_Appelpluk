@@ -1,0 +1,17 @@
+repositories:
+  src/aruco_ros:
+    type: git
+    url: https://github.com/pal-robotics/aruco_ros.git
+    version: humble-devel
+  src/image_common:
+    type: git
+    url: https://github.com/ros-perception/image_common.git
+    version: humble
+  src/image_pipeline:
+    type: git
+    url: https://github.com/ros-perception/image_pipeline.git
+    version: humble
+  src/vision_opencv:
+    type: git
+    url: https://github.com/ros-perception/vision_opencv.git
+    version: humble
