@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+   <gazebo>
+
+    <!-- sensors -->
+    <plugin filename="ignition-gazebo-sensors-system"  name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+  </gazebo>
+
+  
+  <!-- Sensor simulation -->
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="camera">       
+      <always_on>1</always_on>
+      <update_rate>15</update_rate>
+      <visualize>true</visualize>
+      <topic>camera/image_raw</topic>
+      <ignition_frame_id>camera_link</ignition_frame_id>
+    </sensor>
+  </gazebo>
+
+</robot>

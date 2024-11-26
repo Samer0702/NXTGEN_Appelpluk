@@ -6,6 +6,11 @@
 
   <xacro:include filename="$(find robot_servoing)/model/urdf/utils.urdf.xacro" />
 
+  <xacro:include filename="$(find robot_servoing)/model/urdf/sim_interface.urdf.xacro" />
+
   <xacro:include filename="$(find robot_servoing)/model/urdf/ur.urdf.xacro" />
+
+  <xacro:include filename="$(find robot_servoing)/model/urdf/demo_apple.urdf.xacro" />
+
 
 </robot>
