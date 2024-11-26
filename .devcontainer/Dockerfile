@@ -25,22 +25,33 @@ RUN apt-get update \
 RUN sudo usermod -a -G video ros
 
 # Set up dependencies required for visual servoing
-RUN apt-get update \
-  && apt-get install -y libasio-dev \
-  && apt-get install -y python3 \
-  && apt-get install -y python3-pip \ 
-  && pip3 install opencv-python \
-  && apt install -y python3-numpy \
-  && apt install -y libboost-python-dev \
-  && apt install -y libopencv-dev \
-  && apt-get install -y ros-${DISTRO}-usb-cam \
-  && apt-get install -y ros-${DISTRO}-ur \
-  && apt-get install -y ros-${DISTRO}-ros2-control \
-  && apt-get install -y ros-${DISTRO}-ros2-controllers \
-  && apt-get install -y net-tools \
-  && rm -rf /var/lib/apt/lists/*  
+RUN apt-get update && apt-get install -y \
+ros-${DISTRO}-dynamixel-sdk \
+ros-${DISTRO}-dynamixel-workbench-toolbox \
+ros-${DISTRO}-xacro \
+ros-${DISTRO}-joint-state-publisher \
+ros-${DISTRO}-joint-state-publisher-gui \
+ros-${DISTRO}-ros-gz \
+ros-${DISTRO}-ros2-control \
+ros-${DISTRO}-ros2-controllers \
+ros-${DISTRO}-robot-localization \
+ros-${DISTRO}-navigation2 \
+ros-${DISTRO}-tf-transformations \
+ros-${DISTRO}-gazebo-ros-pkgs \
+ros-${DISTRO}-usb-cam \
+ros-${DISTRO}-ur \
+ros-${DISTRO}-moveit \
+ignition-fortress \
+python3-pip \
+libgl1-mesa-dri libgl1-mesa-glx libegl1-mesa mesa-utils \
+gazebo \
+net-tools \
+python3-numpy \
+libboost-python-dev \
+libopencv-dev \
+&& rm -rf /var/lib/apt/lists/*
 
-RUN echo "source /opt/ros/${DISTRO}/setup.bash" >> /home/ros/.bashrc
+RUN echo "source /opt/ros/${DISTRO}/setup.bash" >> /home/${USERNAME}/.bashrc
 
 USER ${USERNAME}
 
