@@ -23,6 +23,8 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 
+install(DIRECTORY model DESTINATION share/${PROJECT_NAME}/)
+
 add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)
 target_include_directories(servo_keyboard_input PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

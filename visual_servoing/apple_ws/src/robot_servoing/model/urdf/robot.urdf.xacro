@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot name="ur5_camera_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Include utility macros -->
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro" />
+
+  <xacro:include filename="$(find robot_servoing)/model/urdf/utils.urdf.xacro" />
+
+  <xacro:include filename="$(find robot_servoing)/model/urdf/ur.urdf.xacro" />
+
+</robot>
