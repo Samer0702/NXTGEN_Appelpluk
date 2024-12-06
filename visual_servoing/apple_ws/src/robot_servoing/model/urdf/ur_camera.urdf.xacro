@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://wiki.ros.org/xacro" name="$(arg name)">
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur">
    <!-- robot name parameter -->
    <xacro:arg name="name" default="ur"/>
    <!-- import main macro -->
    <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
 
-  <xacro:property name="camera_width" value="0.2"/>
-  <xacro:property name="camera_depth" value="0.05"/>
-  <xacro:property name="camera_height" value="0.1"/>
-  <xacro:property name="lens_radius" value="0.03"/>
-  <xacro:property name="lens_length" value="0.02"/>
+  <xacro:property name="camera_width" value="0.1"/>
+  <xacro:property name="camera_depth" value="0.025"/>
+  <xacro:property name="camera_height" value="0.05"/>
+  <xacro:property name="lens_radius" value="0.015"/>
+  <xacro:property name="lens_length" value="0.01"/>
   <xacro:property name="camera_mass" value="1.0"/>
-  <xacro:property name="lens_mass" value="0.1"/>
+  <xacro:property name="lens_mass" value="0.05"/>
 
    <!-- possible 'ur_type' values: ur3, ur3e, ur5, ur5e, ur10, ur10e, ur16e, ur20, ur30 -->
    <!-- the default value should raise an error in case this was called without defining the type -->
-   <xacro:arg name="ur_type" default="ur5x"/>
+   <xacro:arg name="ur_type" default="ur5"/>
 
    <!-- parameters -->
    <xacro:arg name="tf_prefix" default="" />
@@ -83,7 +83,7 @@
      sim_gazebo="$(arg sim_gazebo)"
      sim_ignition="$(arg sim_ignition)"
      headless_mode="$(arg headless_mode)"
-     initial_positions="${xacro.load_yaml(initial_positions_file)}"
+     initial_positions="${dict(shoulder_pan_joint=0.0,shoulder_lift_joint=-1.57,elbow_joint=0.0,wrist_1_joint=-1.57,wrist_2_joint=0.0,wrist_3_joint=0.0)}"
      use_tool_communication="$(arg use_tool_communication)"
      tool_voltage="$(arg tool_voltage)"
      tool_parity="$(arg tool_parity)"
@@ -175,21 +175,21 @@
 
   <!-- joints -->
   <joint name="camera_sensor_joint" type="fixed">
-    <origin xyz="${lens_length/2.0 + 0.1} 0 0" rpy="0 0 0"/>
+    <origin xyz="${lens_length/2.0} 0 0" rpy="0 0 0"/>
     <parent link="camera_lens_link"/>
     <child link="camera_link"/>
   </joint>
 
   <joint name="camera_lens_joint" type="fixed">
-    <origin xyz="${camera_depth/2.0} 0 0" rpy="0 0 0"/>
     <parent link="camera_body_link"/>
     <child link="camera_lens_link"/>
+    <origin xyz="${camera_depth/2.0 + 0.015} 0 0" rpy="0 0 0"/>
   </joint>
 
   <joint name="robot_mount" type="fixed">
     <parent link="tool0"/>
     <child link="camera_body_link"/>
-    <origin xyz="0 0 0" rpy="${pi/2} -${pi/2} 0" />
+    <origin xyz="0 0 0.015" rpy="${pi/2} -${pi/2} 0" />
   </joint>
 
 </robot>

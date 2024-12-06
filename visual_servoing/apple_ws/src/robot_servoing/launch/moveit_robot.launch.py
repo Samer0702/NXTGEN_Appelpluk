@@ -137,8 +137,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_file",
-    #        default_value=os.path.join(get_package_share_directory("robot_servoing"), 'model', 'urdf', 'robot.urdf.xacro'),
-            default_value="ur.urdf.xacro",
+            default_value=os.path.join(get_package_share_directory("robot_servoing"), 'model', 'urdf', 'robot.urdf.xacro'),
+    #        default_value="ur.urdf.xacro",
             description="URDF/XACRO description file with the robot.",
         )
     )

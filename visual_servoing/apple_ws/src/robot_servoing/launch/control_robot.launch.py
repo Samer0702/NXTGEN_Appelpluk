@@ -193,6 +193,14 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
+    apple_detection = Node(
+        package='ball_detection',
+        namespace='detection',
+        executable='ball_detector',
+        name='ball_detector',
+        output='screen'
+    )
+
     nodes_to_start = [
         robot_state_publisher_node,
         joint_state_broadcaster_spawner,
@@ -203,6 +211,7 @@ def launch_setup(context, *args, **kwargs):
         gz_launch_description_with_gui,
         gz_launch_description_without_gui,
         gz_sim_bridge,
+        apple_detection,
     ]
 
     return nodes_to_start

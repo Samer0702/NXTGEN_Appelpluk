@@ -13,6 +13,7 @@ find_package(rclcpp REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(moveit_msgs REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
 
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
@@ -24,6 +25,17 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
 
 install(DIRECTORY model DESTINATION share/${PROJECT_NAME}/)
+
+add_executable(move_arm src/move_arm.cpp)
+target_include_directories(move_arm PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(move_arm PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  move_arm
+  "moveit_ros_planning_interface"
+  "rclcpp"
+)
 
 add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)
 target_include_directories(servo_keyboard_input PUBLIC
@@ -38,6 +50,9 @@ target_include_directories(servo_camera_input PUBLIC
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(servo_camera_input ${THIS_PACKAGE_INCLUDE_DEPENDS})
 target_compile_features(servo_camera_input PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+install(TARGETS move_arm
+  DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS servo_keyboard_input
   DESTINATION lib/${PROJECT_NAME})
