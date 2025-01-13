@@ -125,6 +125,16 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        box_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        slider_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0

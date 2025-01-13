@@ -69,7 +69,7 @@
    <xacro:ur_robot
      name="$(arg name)"
      tf_prefix="$(arg tf_prefix)"
-     parent="world"
+     parent="slider_link"
      joint_limits_parameters_file="$(arg joint_limit_params)"
      kinematics_parameters_file="$(arg kinematics_params)"
      physical_parameters_file="$(arg physical_params)"
@@ -103,7 +103,7 @@
      script_sender_port="$(arg script_sender_port)"
      trajectory_port="$(arg trajectory_port)"
      >
-     <origin xyz="0 0 0" rpy="0 0 0" />          <!-- position robot in the world -->
+     <origin xyz="0 0 0.03" rpy="0 0 0" />          <!-- position robot in the world -->
    </xacro:ur_robot>
 
    <xacro:if value="$(arg sim_gazebo)">
@@ -128,6 +128,48 @@
       </plugin>
     </gazebo>
   </xacro:if>
+
+  <!-- Box -->
+  <link name="box_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="2 0.5 0.5" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.5 0.5 0.5" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.1" iyy="0.1" izz="0.1" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+    <link name="slider_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.25 0.05" />
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.25 0.05" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1000"/>
+      <inertia ixx="4.4" ixy="0.0" ixz="0.0" iyy="4.4" iyz="0.0" izz="0.2"/>
+    </inertial>
+  </link>
 
   <!-- Camera body -->
   <link name="camera_body_link">
@@ -173,6 +215,14 @@
   <!-- Camera sensor link -->
   <link name="camera_link"/>
 
+  <link name="camera_link_sensor"/>
+
+  <joint name="camera_sensor_joint_frame" type="fixed">
+    <origin xyz="0 0 0" rpy="-${pi/2} 0 -${pi/2}"/>
+    <parent link="camera_link"/>
+    <child link="camera_link_sensor"/>
+  </joint>
+
   <!-- joints -->
   <joint name="camera_sensor_joint" type="fixed">
     <origin xyz="${lens_length/2.0} 0 0" rpy="0 0 0"/>
@@ -192,4 +242,32 @@
     <origin xyz="0 0 0.015" rpy="${pi/2} -${pi/2} 0" />
   </joint>
 
+  <joint name="box_to_world_joint" type="fixed">
+    <origin xyz="0 0 0.25" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="box_link"/>
+  </joint>
+
+  <joint name="slider_joint" type="prismatic">
+    <origin xyz="0 0 0.3" rpy="0 0 0"/>
+    <parent link="box_link"/>
+    <child link="slider_link"/>
+    <axis xyz="1 0 0"/> <!-- Axis of sliding -->
+    <limit effort="0.0" lower="-1.0" upper="1.0" velocity="1.0"/>
+  </joint>
+
+  <ros2_control name="ur_slider_control" type="system">
+    <hardware>
+      <plugin>ign_ros2_control/IgnitionSystem</plugin>
+    </hardware>
+    <joint name="slider_joint">
+       <command_interface name="position"/>
+       <command_interface name="velocity"/>
+       <state_interface name="position">
+         <!-- initial position for the FakeSystem and simulation -->
+         <param name="initial_value">0.0</param>
+       </state_interface>
+       <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
 </robot>

@@ -43,9 +43,12 @@ from launch.substitutions import (
     FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
+    TextSubstitution,
 )
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+import os
+from ament_index_python.packages import get_package_share_directory
 
 
 def launch_setup(context, *args, **kwargs):
@@ -153,7 +156,24 @@ def launch_setup(context, *args, **kwargs):
         condition=UnlessCondition(start_joint_controller),
     )
 
+    slider_controller = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["slider_position_controller", "-c", "/controller_manager"],
+    )
+
     # GZ nodes
+    gazebo_launch_file = os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([gazebo_launch_file]),
+        launch_arguments=[
+            ('gz_args', [
+                TextSubstitution(text=' -r -v 0 '),
+                world_file
+            ])
+        ],
+    )
+
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
@@ -166,21 +186,6 @@ def launch_setup(context, *args, **kwargs):
             "-allow_renaming",
             "true",
         ],
-    )
-    gz_launch_description_with_gui = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [FindPackageShare("ros_gz_sim"), "/launch/gz_sim.launch.py"]
-        ),
-        launch_arguments={"gz_args": ["-r", "-v", "4", world_file]}.items(),
-        condition=IfCondition(gazebo_gui),
-    )
-
-    gz_launch_description_without_gui = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [FindPackageShare("ros_gz_sim"), "/launch/gz_sim.launch.py"]
-        ),
-        launch_arguments={"gz_args": ["-s", "-r", "-v", "4", world_file]}.items(),
-        condition=UnlessCondition(gazebo_gui),
     )
 
     # Make the /clock topic available in ROS
@@ -207,11 +212,11 @@ def launch_setup(context, *args, **kwargs):
         delay_rviz_after_joint_state_broadcaster_spawner,
         initial_joint_controller_spawner_stopped,
         initial_joint_controller_spawner_started,
+        gazebo,
         gz_spawn_entity,
-        gz_launch_description_with_gui,
-        gz_launch_description_without_gui,
         gz_sim_bridge,
-        apple_detection,
+        slider_controller,
+ #       apple_detection,
     ]
 
     return nodes_to_start
@@ -314,7 +319,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "world_file",
-            default_value="empty.sdf",
+            default_value=os.path.join(get_package_share_directory("robot_servoing"), 'model', 'world', 'world.sdf'),
+        #    default_value="empty.sdf",
             description="Gazebo world file (absolute path or filename from the gazebosim worlds collection) containing a custom world.",
         )
     )

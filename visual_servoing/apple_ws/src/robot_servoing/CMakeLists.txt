@@ -37,6 +37,17 @@ ament_target_dependencies(
   "rclcpp"
 )
 
+add_executable(aruco_robot_controller src/aruco_robot_controller.cpp)
+target_include_directories(aruco_robot_controller PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(aruco_robot_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  aruco_robot_controller
+  "moveit_ros_planning_interface"
+  "rclcpp"
+)
+
 add_executable(servo_keyboard_input src/servo_keyboard_input.cpp)
 target_include_directories(servo_keyboard_input PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -52,6 +63,9 @@ ament_target_dependencies(servo_camera_input ${THIS_PACKAGE_INCLUDE_DEPENDS})
 target_compile_features(servo_camera_input PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS move_arm
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS aruco_robot_controller
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS servo_keyboard_input

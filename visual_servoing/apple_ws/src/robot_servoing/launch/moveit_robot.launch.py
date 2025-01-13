@@ -35,6 +35,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node
 
 
 
@@ -84,7 +85,14 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
+    aruco_detect_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [FindPackageShare("ball_detection"), "/launch", "/detect_aruco_live.launch.py"]
+        ),
+    )
+
     nodes_to_launch = [
+        aruco_detect_launch,
         ur_control_launch,
         ur_moveit_launch,
     ]
@@ -153,7 +161,8 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             "moveit_config_file",
-            default_value="ur.srdf.xacro",
+            default_value=os.path.join(get_package_share_directory("robot_servoing"), 'model', 'srdf', 'ur_slider.srdf.xacro'),
+        #    default_value="ur.srdf.xacro",
             description="MoveIt SRDF/XACRO description file with the robot.",
         )
     )

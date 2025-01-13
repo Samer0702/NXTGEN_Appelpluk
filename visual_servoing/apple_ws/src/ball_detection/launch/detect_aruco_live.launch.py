@@ -8,7 +8,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     marker_id_arg = DeclareLaunchArgument(
-        'marker_id', default_value='582',
+        'marker_id', default_value='42',
         description='Marker ID. '
     )
 
@@ -23,12 +23,12 @@ def generate_launch_description():
     )
 
     camera_frame_arg = DeclareLaunchArgument(
-        'camera_frame', default_value='camera_frame',
+        'camera_frame', default_value='camera_link_sensor',
         description='Frame in which the marker pose will be refered. '
     )
 
     reference_frame = DeclareLaunchArgument(
-        'reference_frame', default_value='',
+        'reference_frame', default_value='world',
         description='Reference frame. '
         'Leave it empty and the pose will be published wrt param parent_name. '
     )
@@ -62,16 +62,16 @@ def generate_launch_description():
     args.append(corner_refinement_arg)
 
     return LaunchDescription(args + [
-        Node(
-            package='usb_cam',
-            namespace='camera',
-            executable='usb_cam_node_exe',
-            parameters=[camera_config_file],
-            name='cam',
-            output='screen',
-            remappings=[('/camera/image_raw','/out/image_raw'),
-                        ('/camera/camera_info','/out/camera_info')]
-        ),
+     #   Node(
+     #       package='usb_cam',
+     #       namespace='camera',
+     #       executable='usb_cam_node_exe',
+     #       parameters=[camera_config_file],
+     #       name='cam',
+     #       output='screen',
+     #       remappings=[('/camera/image_raw','/out/image_raw'),
+     #                   ('/camera/camera_info','/out/camera_info')]
+     #   ),
         # Node(
         #     package='image_proc',
         #     executable='crop_decimate_node',
@@ -81,7 +81,7 @@ def generate_launch_description():
             package='aruco_ros',
             executable='single',
             parameters=[aruco_single_params],
-            remappings=[('/image','/out/image_raw'),
-                        ('/camera_info','/out/camera_info')]
+            remappings=[('/image','/camera/image_raw'),
+                        ('/camera_info','/camera/camera_info')]
         )
     ])

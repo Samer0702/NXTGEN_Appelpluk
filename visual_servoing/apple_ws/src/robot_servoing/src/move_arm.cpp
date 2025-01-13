@@ -1,11 +1,33 @@
 #include <memory>
-
 #include <rclcpp/rclcpp.hpp>
 #include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/planning_scene_interface/planning_scene_interface.h>
+#include <shape_msgs/msg/solid_primitive.hpp>
+#include <geometry_msgs/msg/pose.hpp>
+#include <moveit_msgs/msg/collision_object.hpp>
 
-int main(int argc, char * argv[])
-{
-  // Initialize ROS and create the Node
+// Function to add a ground plane to the planning scene
+void addGroundPlane(moveit::planning_interface::PlanningSceneInterface& planning_scene_interface) {
+  moveit_msgs::msg::CollisionObject ground_plane;
+  ground_plane.id = "ground_plane";
+  ground_plane.header.frame_id = "world";
+
+  shape_msgs::msg::SolidPrimitive box;
+  box.type = shape_msgs::msg::SolidPrimitive::BOX;
+  box.dimensions = {10.0, 10.0, 0.01}; // Length, width, height
+
+  geometry_msgs::msg::Pose box_pose;
+  box_pose.orientation.w = 1.0;
+  box_pose.position.z = -0.005; 
+
+  ground_plane.primitives.push_back(box);
+  ground_plane.primitive_poses.push_back(box_pose);
+  ground_plane.operation = ground_plane.ADD;
+
+  planning_scene_interface.applyCollisionObject(ground_plane);
+}
+
+int main(int argc, char * argv[]) {
   rclcpp::init(argc, argv);
   auto const node = std::make_shared<rclcpp::Node>(
     "move_arm",
@@ -17,18 +39,29 @@ int main(int argc, char * argv[])
 
   // Create the MoveIt MoveGroup Interface
   using moveit::planning_interface::MoveGroupInterface;
-  auto move_group_interface = MoveGroupInterface(node, "manipulator");
+  auto move_group_interface = MoveGroupInterface(node, "ur_manipulator");
 
-  // Set a target Pose
-  auto const target_pose = []{
+  // Create the Planning Scene Interface
+  moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+
+  // Add the ground plane to the planning scene
+  addGroundPlane(planning_scene_interface);
+
+  // Set a target Position Only (Ignore Orientation)
+  auto const target_position = []{
     geometry_msgs::msg::Pose msg;
-    msg.orientation.w = 1.0;
     msg.position.x = 0;
-    msg.position.y = 0.2;
-    msg.position.z = 0;
+    msg.position.y = 0.5;
+    msg.position.z = 0.7;
     return msg;
   }();
-  move_group_interface.setPoseTarget(target_pose);
+
+  // Use position-only IK by setting the target position
+  move_group_interface.setPositionTarget(
+    target_position.position.x,
+    target_position.position.y,
+    target_position.position.z
+  );
 
   // Create a plan to that target pose
   auto const [success, plan] = [&move_group_interface]{
@@ -38,12 +71,14 @@ int main(int argc, char * argv[])
   }();
 
   // Execute the plan
-  if(success) {
+  if (success) {
+    RCLCPP_INFO(logger, "Planning successful! Executing the plan...");
     move_group_interface.execute(plan);
   } else {
-    RCLCPP_ERROR(logger, "Planing failed!");
+    RCLCPP_ERROR(logger, "Planning failed!");
   }
-    // Shutdown ROS
-    rclcpp::shutdown();
-    return 0;
+
+  // Shutdown ROS
+  rclcpp::shutdown();
+  return 0;
 }

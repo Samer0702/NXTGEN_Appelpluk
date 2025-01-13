@@ -9,6 +9,6 @@
 
   <xacro:include filename="$(find robot_servoing)/model/urdf/ur_camera.urdf.xacro" />
 
-  <xacro:include filename="$(find robot_servoing)/model/urdf/demo_apple.urdf.xacro" />
+  <!-- <xacro:include filename="$(find robot_servoing)/model/urdf/demo_apple.urdf.xacro" /> -->
 
 </robot>

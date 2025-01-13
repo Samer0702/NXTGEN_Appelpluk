@@ -103,12 +103,6 @@ void ball_detector::BallDetector::imageCb(const sensor_msgs::msg::Image::ConstSh
         }
     }
 
-
-    // Display the number of detected apples
-    char txt[50];
-    sprintf(txt, "%d apple(s) detected", Info.appleNumber_);
-    cv::putText(cv_ptr->image, txt, cv::Point(50, 50), cv::FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255, 255, 255), 2, cv::LINE_AA);
-
     // Output the modified video stream
     image_pub_.publish(cv_ptr->toImageMsg());
 
